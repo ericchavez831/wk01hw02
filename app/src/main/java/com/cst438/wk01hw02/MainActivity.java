@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import java.util.ArrayList;
 
-
 /**
  *
  * <h1> Retrofit API</h1>
@@ -31,38 +30,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button loginAccount;
-        loginAccount = findViewById(R.id.login);
+    }
+
+    public void nextActivity(View view){
         EditText usernameET = findViewById(R.id.username);
         EditText passwordET = findViewById(R.id.password);
+        String username = usernameET.getText().toString();
+        String password = passwordET.getText().toString();
+        // Clear the Edit Test Focus
+        clearET();
+        int userId;
 
-        loginAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Where you check if the username and password are valid
-                String username = usernameET.getText().toString();
-                String password = passwordET.getText().toString();
-                clearET();
-                int userId;
+        // Creating a list with all different users
+        ArrayList<User> allUsers = populateUsers();
 
-                // Creating a list with all different users
-                ArrayList<User> allUsers = populateUsers();
+        // find the user id in the array list
+        userId = userFound(allUsers, username, password);
 
-                // find the user id in the array list
-                userId = userFound(allUsers, username, password);
+        if(userId > 0){ // User found
+            Toast.makeText(MainActivity.this,"Login Success!", Toast.LENGTH_SHORT).show();
 
-                // it is a user then we want to redirect to a new activity
-                if(userId != -1){
-                    Intent i = new Intent(MainActivity.this, LandingPageActivity.class);
-                    // Put the userId into a bundle and pass it into landing page activity
-                    Bundle extraInfo = new Bundle();
-                    extraInfo.putString("userId", String.valueOf(userId));
-                    extraInfo.putString("username", username);
-                    i.putExtras(extraInfo);
-                    startActivity(i);
-                }
-            }
-        });
+            // Put the userId into a bundle and pass it into landing page activity
+            Bundle extraInfo = new Bundle();
+            extraInfo.putString("userId", String.valueOf(userId));
+            extraInfo.putString("username", username);
+            Intent intent = LandingPageActivity.getIntent(getApplicationContext(), extraInfo);
+            startActivity(intent);
+        }else if(userId == -1){
+            clearUsernameET();
+        }else if(userId == -2){
+            clearPasswordET();
+        }
 
     }
 
@@ -71,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
      *
      * @return an ArrayList with all the Users
      */
-    private ArrayList<User> populateUsers(){
+    public static ArrayList<User> populateUsers(){
         ArrayList<User> allUsers = new ArrayList<>();
 
         allUsers.add(new User("bret","bret123",1));
-        allUsers.add(new User("Anotnette","ant123",2));
+        allUsers.add(new User("Antonette","ant123",2));
         allUsers.add(new User("Samantha","sam123",3));
         allUsers.add(new User("Karianne","kari123",4));
         allUsers.add(new User("Kamren","kam123",5));
@@ -97,44 +95,25 @@ public class MainActivity extends AppCompatActivity {
      * @param password
      * @return an int value that returns the userId
      */
-    private int userFound(ArrayList<User> allUsers, String username, String password){
+    public static int userFound(ArrayList<User> allUsers, String username, String password){
 
-        EditText usernameET = findViewById(R.id.username);
-        EditText passwordET = findViewById(R.id.password);
-        boolean usernameFound = false;
-        // for loop to iterate through the array list that contains user
         for(int i = 0; i < allUsers.size(); i++){
-            // checks if there is a match with users created in populateUsers() and users entered
+            // checks if there is a match with users created in populateUsers()
             if(allUsers.get(i).getUsername().equals(username)){
-                usernameFound = true;
-
                 // Successful login attempt
                 if(allUsers.get(i).getPassword().equals(password)) {
-                    Toast.makeText(this,"Login Success!", Toast.LENGTH_SHORT).show();
                     return allUsers.get(i).getUserId();
                 }
                 else{
-                    // Password gets highlighted
-                    passwordET.setSelectAllOnFocus(true);
-                    passwordET.requestFocus();
-                    Toast.makeText(this,"Password is incorrect", Toast.LENGTH_SHORT).show();
+                    return -2; // Password is wrong
                 }
             }
         }
-        if(usernameFound == false){
-            // Username get highlighted
-            usernameET.setSelectAllOnFocus(true);
-            usernameET.requestFocus();
-            Toast.makeText(this,"Username is incorrect", Toast.LENGTH_SHORT).show();
-        }
-
-        // return false if the user is not found
-        return -1;
+        return -1; // Username is wrong
     }
 
     /**
-     * This function clears the edit text highlight that is added when the user input an
-     * incorrect password or username
+     * This function clears the edit text highlight
      */
     private void clearET(){
         EditText usernameET = findViewById(R.id.username);
@@ -145,4 +124,25 @@ public class MainActivity extends AppCompatActivity {
         passwordET.setSelectAllOnFocus(false);
     }
 
+    /**
+     * This function clears the edit text highlight that is added when the user input an
+     * incorrect password
+     */
+    private void clearPasswordET(){
+        EditText passwordET = findViewById(R.id.password);
+        passwordET.setSelectAllOnFocus(true);
+        passwordET.requestFocus();
+        Toast.makeText(MainActivity.this,"Password is incorrect", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * This function clears the edit text highlight that is added when the user input an
+     * incorrect username
+     */
+    private void clearUsernameET(){
+        EditText usernameET = findViewById(R.id.username);
+        usernameET.setSelectAllOnFocus(true);
+        usernameET.requestFocus();
+        Toast.makeText(MainActivity.this,"Username is incorrect", Toast.LENGTH_SHORT).show();
+    }
 }

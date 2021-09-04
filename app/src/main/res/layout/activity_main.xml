@@ -29,10 +29,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:onClick="nextActivity"
         android:padding="10dp"
+        android:text="Login"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:cornerRadius="210px"
-        android:text="Login"/>
+        app:cornerRadius="210px" />
 
 </LinearLayout>

@@ -2,6 +2,8 @@ package com.cst438.wk01hw02;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LandingPageActivity extends AppCompatActivity {
 
     private TextView textViewResult;
+    public static final String ACTIVITY_LABEL = "SECOND_ACTIVITY_COM_ECHAVEZ";
 
     // Code to integrate retrofit API referenced from
     // https://codinginflow.com/tutorials/android/retrofit/part-1-simple-get-request
@@ -34,7 +37,8 @@ public class LandingPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing_page);
         textViewResult = findViewById(R.id.text_view_result);
-        Bundle extras = getIntent().getExtras();
+
+        Bundle extras = getIntent().getBundleExtra(ACTIVITY_LABEL);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://jsonplaceholder.typicode.com/")
@@ -75,5 +79,13 @@ public class LandingPageActivity extends AppCompatActivity {
                 textViewResult.setText(t.getMessage());
             }
         });
+    }
+
+    public static Intent getIntent(Context context, Bundle bundle){
+        Intent intent = new Intent(context,LandingPageActivity.class);
+
+        intent.putExtra(LandingPageActivity.ACTIVITY_LABEL, bundle);
+
+        return intent;
     }
 }
