@@ -1,19 +1,30 @@
 package com.cst438.wk01hw02;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
 
-     // getting the values passed in
+/**
+ *
+ * <h1> Retrofit API</h1>
+ * This application allows you to login in to and see their posts
+ *
+ * <h1><b>Main Activity</b></h1>
+ * The main activity presents the user with a login screen.
+ * If the users are entering invalid credentials then they will receive a message
+ * that notifies them on what is invalid.
+ *
+ * @author Eric Chavez Velez
+ */
+
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     // Put the userId into a bundle and pass it into landing page activity
                     Bundle extraInfo = new Bundle();
                     extraInfo.putString("userId", String.valueOf(userId));
+                    extraInfo.putString("username", username);
                     i.putExtras(extraInfo);
                     startActivity(i);
                 }
@@ -54,7 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // Populate the list with users
+    /**
+     * This Function populates the application with hard-coded users in the application.
+     *
+     * @return an ArrayList with all the Users
+     */
     private ArrayList<User> populateUsers(){
         ArrayList<User> allUsers = new ArrayList<>();
 
@@ -72,7 +88,15 @@ public class MainActivity extends AppCompatActivity {
         return allUsers;
     }
 
-    // Finds the user in the array list
+    /**
+     *
+     * This function searches through the ArrayList to find a specified User in the list.
+     *
+     * @param allUsers
+     * @param username
+     * @param password
+     * @return an int value that returns the userId
+     */
     private int userFound(ArrayList<User> allUsers, String username, String password){
 
         EditText usernameET = findViewById(R.id.username);
@@ -108,7 +132,10 @@ public class MainActivity extends AppCompatActivity {
         return -1;
     }
 
-    // Function that clears the edit text highlight
+    /**
+     * This function clears the edit text highlight that is added when the user input an
+     * incorrect password or username
+     */
     private void clearET(){
         EditText usernameET = findViewById(R.id.username);
         EditText passwordET = findViewById(R.id.password);
